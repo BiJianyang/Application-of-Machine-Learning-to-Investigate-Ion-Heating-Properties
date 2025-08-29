@@ -1,2 +1,2 @@
 # Application-of-Machine-Learning-to-Investigate-Ion-Heating-Properties
-This code framework addresses the entire workflow of the TS-6 270-channel Doppler spectroscopy system, including calibration, ICCD triggering, full-channel intensity versus wavelength analysis, Abel inversion, and ion temperature reconstruction.Applied machine learning to improve Gaussian fitting accuracy by 23% and enhanced ion temperature reconstruction precision by 10%.
+This code framework addresses the entire workflow of the TS-6 270-channel Doppler spectroscopy system, including calibration, ICCD triggering, full-channel intensity versus wavelength analysis, Abel inversion, and ion temperature reconstruction.
