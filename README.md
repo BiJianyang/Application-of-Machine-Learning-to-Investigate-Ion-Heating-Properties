@@ -1,2 +1,2 @@
 # Application-of-Machine-Learning-to-Investigate-Ion-Heating-Properties
-We found that Ar ions were heated to significantly higher temperatures than H ions, and asymmetric heating was observed in Ar plasmas. By applying machine learning, the accuracy of Gaussian fitting was improved by 23%, and the reconstruction precision of ion temperature was enhanced by 10%.
+This code framework addresses the entire workflow of the TS-6 270-channel Doppler spectroscopy system, including calibration, ICCD triggering, full-channel intensity versus wavelength analysis, Abel inversion, and ion temperature reconstruction.
