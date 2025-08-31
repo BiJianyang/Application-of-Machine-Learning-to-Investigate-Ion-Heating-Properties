@@ -40,14 +40,14 @@ Ti_grid = griddata((z, r), T, (Z, R), method='cubic')
 # ---------- plotting ----------
 fig, ax = plt.subplots(figsize=(8, 6))
 
-# Ti 背景图：氢气用 0–30 eV
+
 levels = np.linspace(0, 20, 21)
 cf = ax.contourf(Z, R, Ti_grid, levels=levels, cmap='jet', extend='both')
 cbar = fig.colorbar(cf, ax=ax)
 cbar.set_label('Ion Temperature Ti [eV]')
 cbar.set_ticks(np.linspace(0, 20, 7))  # 0,5,...,30
 
-# ========= 加上磁场线 =========
+
 frame = int(delay_us)
 rlim = (150/1000, 350/1000)
 zlim = (z.min()/1000, z.max()/1000)
@@ -56,21 +56,19 @@ zlim = (z.min()/1000, z.max()/1000)
 Rψ, Zψ = ts6.RZ_mesh()
 Rψ, Zψ = Rψ.T[:ψ.shape[0], :ψ.shape[1]], Zψ.T[:ψ.shape[0], :ψ.shape[1]]
 
-# mm 单位
 Rψ *= 1000
 Zψ *= 1000
 
-# 区域限制
 mask = (Rψ >= 150) & (Rψ <= 350) & (Zψ >= z.min()) & (Zψ <= z.max())
 ψ_roi = np.where(mask, ψ, np.nan)
 
-# 绘制磁场线
+
 finite_vals = ψ_roi[np.isfinite(ψ_roi)]
 if finite_vals.size > 0:
     levels_psi = np.linspace(finite_vals.min(), finite_vals.max(), 40)
     ax.contour(Zψ, Rψ, ψ_roi, levels=levels_psi, colors='k', linewidths=1)
 
-# 标注
+
 ax.set_xlabel('Z [mm]')
 ax.set_ylabel('R [mm]')
 ax.set_title(f' delay {delay_us} µs ')
@@ -79,10 +77,10 @@ ax.set_xlim(-50, 50)
 ax.set_aspect('equal', 'box')
 plt.tight_layout()
 
-# 保存
 save_name = f"H_shot{shot_number}_delay{delay_us}_Ti_withBfield.png"
 save_path = os.path.join(base_dir, save_name)
 plt.savefig(save_path, dpi=300)
 plt.show()
 
 print("Image saved to:", save_path)
+
