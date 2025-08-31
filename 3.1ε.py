@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from glob import glob
 
-# === 输入 ===
+
 date_shot = input("请输入日期和shot编号，例如 250317,22：").strip()
 date, shot = date_shot.split(',')
 
@@ -14,24 +14,23 @@ inverse_dispersion = 0.0038  # 每像素对应的波长差 [nm/pixel]
 for file in excel_files:
     df = pd.read_csv(file, header=None)
 
-    # 找空行位置
+
     empty_row_indices = df[df.isnull().all(axis=1)].index.tolist()
     if not empty_row_indices:
         print(f"⚠️ 未找到空行，跳过：{file}")
         continue
     split_idx = empty_row_indices[0]
 
-    # 提取波长索引（第1行，除去编号和p）
+
     wavelength_pixels = df.iloc[0, 1:-1].astype(float).values
     wavelengths_nm = np.round(wavelength_pixels * inverse_dispersion, 4)
 
-    # 提取L数据
+
     L_block = df.iloc[split_idx+1:].reset_index(drop=True)
     channel_ids = L_block.iloc[:, 0].values
     p_vals = L_block.iloc[:, -1].values.astype(float)
     L_vals = L_block.iloc[:, 1:-1].values.astype(float)
 
-    # 按照p从小到大排序
     sort_idx = np.argsort(p_vals)
     p_sorted = p_vals[sort_idx]
     L_sorted = L_vals[sort_idx]
@@ -53,16 +52,16 @@ for file in excel_files:
                 integral += kernel * (p_sorted[m] - p_sorted[m - 1])
             epsilon[n, k] = -1 / np.pi * integral
 
-    # 保存为 CSV（包含 channel 和 p）
+
     df_eps = pd.DataFrame(epsilon, columns=wavelengths_nm)
     df_eps.insert(0, "p", p_sorted)
     df_eps.insert(0, "channel", channel_sorted)
 
-    # 修改文件名为 ZXX_ε.csv
     base_filename = os.path.basename(file)
     z_name = base_filename.split('_')[0]  # e.g., Z30
     save_path = os.path.join(base_dir, f"{z_name}_ε.csv")
     df_eps.to_csv(save_path, index=False)
     print(f"✅ 保存: {save_path}")
+
 
 print("✅ 所有 Z 平面的 epsilon 计算完成。")
