@@ -5,19 +5,18 @@ import re
 import pandas as pd
 
 def read_asc(path):
-    """自动识别空格/逗号分隔，处理 NaN，忽略多余列"""
+
     try:
         return pd.read_csv(path, header=None, sep=r"\s+", dtype=float)
     except Exception:
         return pd.read_csv(path, header=None, delimiter=",", dtype=float, usecols=lambda x: True)
 
 def main(date_str):
-    # === 0. 定位目录 ===
+
     asc_dir = rf"C:\Users\psaoz\Desktop\doppler content\{date_str}\asc\origin"
     if not os.path.isdir(asc_dir):
         raise FileNotFoundError(f"❌ 目录不存在: {asc_dir}")
 
-    # === 1. 扫描文件信息 ===
     pattern = re.compile(r"shot(\d+).*?delay(\d{3,})", re.IGNORECASE)
     files = []
     for fname in os.listdir(asc_dir):
@@ -34,10 +33,9 @@ def main(date_str):
     if not files:
         raise RuntimeError("❌ 没有找到任何 .asc 文件")
 
-    # === 2. 按 shot 排序 ===
     files.sort(key=lambda x: x["shot"])
 
-    # === 3. 匹配每个目标对应最近背景 ===
+
     last_bg = None
     pairs = []
     for f in files:
@@ -49,11 +47,9 @@ def main(date_str):
             else:
                 pairs.append((f, last_bg))
 
-    # === 4. 创建输出 net 文件夹 ===
     net_dir = os.path.join(asc_dir, "net")
     os.makedirs(net_dir, exist_ok=True)
 
-    # === 5. 开始逐对扣除 ===
     for tgt, bg in pairs:
         tgt_path = os.path.join(asc_dir, tgt["fn"])
         bg_path = os.path.join(asc_dir, bg["fn"])
@@ -85,3 +81,4 @@ def main(date_str):
 if __name__ == "__main__":
     date_input = input("请输入日期 (如 250317): ").strip()
     main(date_input)
+
