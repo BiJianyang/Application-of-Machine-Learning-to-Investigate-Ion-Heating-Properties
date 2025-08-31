@@ -51,12 +51,12 @@ cbar = fig.colorbar(cf, ax=ax)
 cbar.set_label('Ion Temperature Ti [eV]')
 cbar.set_ticks(np.linspace(0, 90, 11))         # 0,10,...,100
 
-# ========== 加入磁场等高线 ==========
+
 frame = int(delay_us)  # 延迟 µs 就是 frame
 rlim = (150/1000, 350/1000)  # mm → m
 zlim = (z.min()/1000, z.max()/1000)
 
-# 获取 ψ
+
 ψ_all = ts6.psi_at_t(date_part, int(shot_number), frame)
 R_all, Z_all = ts6.RZ_mesh()
 ψ_shape = ψ_all.shape
@@ -66,17 +66,17 @@ R_all, Z_all = R_all.T[:ψ_shape[0], :ψ_shape[1]], Z_all.T[:ψ_shape[0], :ψ_sh
 R_all *= 1000
 Z_all *= 1000
 
-# 筛选感兴趣区域
+
 mask = (R_all >= 150) & (R_all <= 350) & (Z_all >= z.min()) & (Z_all <= z.max())
 ψ_roi = np.where(mask, ψ_all, np.nan)
 
-# 设置磁场等高线 levels
+
 finite_vals = ψ_roi[np.isfinite(ψ_roi)]
 if finite_vals.size > 0:
     levels_psi = np.linspace(finite_vals.min(), finite_vals.max(), 40)
     ax.contour(Z_all, R_all, ψ_roi, levels=levels_psi, colors='k', linewidths=1)
 
-# 图形信息
+
 ax.set_xlabel('Z [mm]')
 ax.set_ylabel('R [mm]')
 ax.set_title(f' delay {delay_us} µs ')
@@ -85,10 +85,11 @@ ax.set_xlim(-50, 50)
 ax.set_aspect('equal', 'box')
 plt.tight_layout()
 
-# 保存
+
 save_name = f"Ar_shot{shot_number}_delay{delay_us}_Ti_withBfield.png"
 save_path = os.path.join(base_dir, save_name)
 plt.savefig(save_path, dpi=300)
 plt.show()
 
 print("Image saved to:", save_path)
+
